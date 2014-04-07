@@ -67,7 +67,17 @@ func wikiHandler (w http.ResponseWriter, r *http.Request) {
 
 //afficheras la liste des tablatures/view"
 func tabsHandler (w http.ResponseWriter, r *http.Request) {
-  
+	
+	//on charge la liste des tablatures
+	tabs, _ := ioutil.ReadDir("tablatures")
+	
+	fmt.Println("test")
+	for i, v := range tabs {
+       fmt.Println(i, v.Name()) 
+    }
+	fmt.Println("fin test")
+
+	
 	err := list.ExecuteTemplate(w, "list.html", nil)
 	
 	if err != nil {
