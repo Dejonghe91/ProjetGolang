@@ -7,75 +7,67 @@
     <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
     <title>Project</title>
-
+	
+	<!-- VexFlow Compiled Source -->
+    <script src="../resources/vexflow-debug.js"></script>
+    <script src="../resources/vexflow-min.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	
     <!-- Bootstrap core CSS -->
     <link href="resources/bootstrap.min.css" rel="stylesheet">
     <link href="resources/navbar.css" rel="stylesheet">
 	
-	<!-- Style de la page -->
 	<style type="text/css">
-		canvas {
-		  background: #eed;
-		  padding: 10px;
-		  border: 10px solid #ddc;
-		}
+    canvas {
+      background: #eed;
+      padding: 10px;
+      border: 10px solid #ddc;
+    }
 
-		div.egcode {
-		  font-family: Courier;
-		  font-size: 12px;
-		}
-		.editor {
-			background: #cfc;
-			border: 10px solid #afa;
-			font-family: Courier;
-			font-size: 14px;
-		}
-
-
-		div.editor-error .text {
-			background: #faa;
-			border: 5px solid #f88;
-			font-family: Courier;
-			font-size: 14px;
-			padding: 3px;
-			display: none;
-		}
-	</style>
+    div.egcode {
+      font-family: Courier;
+      font-size: 12px;
+    }
 	
-	<script>
-		/* Take raw javascript code, and return moderately useful HTML */
-		function prettify_code(code) {
-		  var lines = code.split(/\r\n|\n|\r/);
-		  var new_lines = [];
-		  for (var j = 0; j < lines.length; ++j) {
-			code = lines[j];
-			code = code.replace(/\s/g, "&nbsp;");
-			code = code.replace(/>/g, "&gt;");
-			code = code.replace(/</g, "&lt;");
-			new_lines.push(code);
-		  }
+	.own{
+		display : none;
+	}
+  </style>
 
-		  pretty_code = "<div class='egcode'>" + new_lines.join("<br/>") + "</div>";
-		  return pretty_code;
-		}
+  <script>
+    /* Take raw javascript code, and return moderately useful HTML */
+    function prettify_code(code) {
+      var lines = code.split(/\r\n|\n|\r/);
+      var new_lines = [];
+      for (var j = 0; j < lines.length; ++j) {
+        code = lines[j];
+        code = code.replace(/\s/g, "&nbsp;");
+        code = code.replace(/>/g, "&gt;");
+        code = code.replace(/</g, "&lt;");
+        new_lines.push(code);
+      }
 
-		/*
-		   Find all the javascript examples and copy their source code
-		   into the associated <code> blocks.
-		*/
-		$(function() {
-		  $("div.description").each(function(index, sel) {
-			codes = $(sel).find("code.example");
-			codes.each(function(i, s) {
-			  var example = $(s).attr("example");
-			  var code = $($(sel).find(
-				"div.example." + example + " script")[0]).html();
-			  $(s).html(prettify_code(code));
-			 })
-		  })
-		})
-	</script>
+      pretty_code = "<div class='egcode'>" + new_lines.join("<br/>") + "</div>";
+      return pretty_code;
+    }
 
+    /*
+       Find all the javascript examples and copy their source code
+       into the associated <code> blocks.
+    */
+    $(function() {
+      $("div.description").each(function(index, sel) {
+        codes = $(sel).find("code.example");
+        codes.each(function(i, s) {
+          var example = $(s).attr("example");
+          var code = $($(sel).find(
+            "div.example." + example + " script")[0]).html();
+          $(s).html(prettify_code(code));
+         })
+      })
+    })
+  </script>
+	
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -114,52 +106,99 @@
 			<p>To see the difference between static and fixed top navbars, just scroll.</p>
 		</div>
 		
-		<div class="description sandbox">
-			<div class="editor-error"><span class="text"></span></div>
-				<div class="example sandbox" example="sandbox">
-					<textarea id="sandbox" class="editor" style="width: 641px; height: 180px; ">new note()</textarea>
-					<canvas width=625 height=160></canvas>
-					<script>
-						var timeout;
-						var msg = $('div.editor-error .text');
+		<div class="example sandbox" example="sandbox">
+		<!-- Cacher a l'utilisateur -->
+		<textarea class="own" id="pre">
+//var canvas = $("div.sandbox div.sandbox canvas")[0];
+var canvas = $("canvas")[0];
+var renderer = new Vex.Flow.Renderer(canvas,
+Vex.Flow.Renderer.Backends.CANVAS);
+var ctx = renderer.getContext();
+renderer.resize(500, 300); // Resize and clear canvas
+ctx.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
 
-						function live_code() {
-						  var code = $("#sandbox").val();
+// Create and draw the tablature stave
+var tabstave = new Vex.Flow.TabStave(10, 0, 500);
+tabstave.addTabGlyph();
+tabstave.setContext(ctx).draw();
+		</textarea>
+		<textarea class="own" id="aft">
+Vex.Flow.Formatter.FormatAndDraw(ctx, tabstave, notes);
+		</textarea>
+		<form action="/save" method="POST">
+		<input name="titre" id="titre" type="text" placeholder="Titre de la tablature" required/>
+        <textarea name="sandbox" id="sandbox" class="editor" style="width: 641px; height: 180px; ">
+var notes = [
+  new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 7}],
+    duration: "q"}),
 
-						  try {
-							eval(
-								var canvas = $("canvas")[0];
-								var renderer = new Vex.Flow.Renderer(canvas,
-								Vex.Flow.Renderer.Backends.CANVAS);
-								var ctx = renderer.getContext();
-								ctx.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
-								
-								// Create and draw the tablature stave
-								var tabstave = new Vex.Flow.TabStave(10, 0, 500);
-								tabstave.addTabGlyph();
-								tabstave.setContext(ctx).draw();
-								
-								// Create some notes
-								var notes = [code];
-								
-								Vex.Flow.Formatter.FormatAndDraw(ctx, tabstave, notes);
-							);
-							msg.html('').hide();
-						  } catch (e) {
-							msg.html(e.toString()).show();
-						  }
+  new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 10},
+                {str: 3, fret: 9}],
+    duration: "q"}).
+  addModifier(new Vex.Flow.Bend("Full"), 1),
 
-						}
-						
-						$('#sandbox').on('blur keyup paste', function() {
-						  if (timeout) clearTimeout(timeout);
-						  timeout = setTimeout(live_code, 200);
-						});
-						live_code();
-					</script>
-				</div>
-			</div>
-		</div>
+  new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 5}],
+    duration: "h"}).
+  addModifier(new Vex.Flow.Vibrato().setHarsh(true).setVibratoWidth(70), 0)
+];
+		</textarea>
+			<input type="submit" value="sauvagarder" />
+        </form>
+        <p/>
+        <canvas id="tata" width=625 height=160></canvas>
+
+        <style>
+        .editor {
+          background: #cfc;
+          border: 10px solid #afa;
+          font-family: Courier;
+          font-size: 14px;
+        }
+
+
+        div.editor-error .text {
+          background: #faa;
+          border: 5px solid #f88;
+          font-family: Courier;
+          font-size: 14px;
+          padding: 3px;
+          display: none;
+        }
+
+        </style>
+        <script>
+
+        var timeout;
+        var msg = $('div.editor-error .text');
+
+        function live_code() {
+			var pre = $("#pre").val();
+			var code = $("#sandbox").val();
+			var aft = $("#aft").val();
+			var tab = pre + code + aft;
+			
+          try {
+            eval(tab);
+            msg.html('').hide();
+          } catch (e) {
+            msg.html(e.toString()).show();
+          }
+
+        }
+
+        $('#sandbox').on('blur keyup paste', function() {
+          if (timeout) clearTimeout(timeout);
+          timeout = setTimeout(live_code, 200);
+        });
+
+        live_code();
+
+        </script>
+      </div>
+		
     </div> <!-- /container -->
     
     
@@ -167,11 +206,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
     <script src="../resources/bootstrap.min.js"></script>
     <script src="../resources/docs.min.js"></script>
-	<script src="../resources/vexflow/vexflow-debug.js"></script>
-	<script src="../resources/vexflow-min.js"></script>
   </body>
 
 </html>

@@ -41,6 +41,7 @@ func main() {
 	http.HandleFunc("/tabs", tabsHandler)		// Liste des tableatures deja enregistrer sur le server
 	http.HandleFunc("/create", createHandler)	// Page de creation / viso d'une tableatures
 	http.HandleFunc("/view", viewHandler)		// Vue d'une tablature
+	http.HandleFunc("/save", saveHandler)		// Sauvegarde d'une tablature
 	
 	//ressources externe de l'application, css / js / images / fonts
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
@@ -53,7 +54,6 @@ func main() {
 
 //afficheras la page présentation
 func homeHandler (w http.ResponseWriter, r *http.Request) {
-
 	err := index.ExecuteTemplate(w, "index.html", nil)
 	
 	if err != nil {
@@ -74,6 +74,9 @@ func wikiHandler (w http.ResponseWriter, r *http.Request) {
 //afficheras la liste des tablatures/view"
 func tabsHandler (w http.ResponseWriter, r *http.Request) {
 	tabs, _ := ioutil.ReadDir("tablatures")
+	
+	//gestion erreur retour loadPage (redirection sur http.NotFound)
+	
 	p := PageTab{Tabs: nil}
 	
 	for _, v := range tabs {
@@ -88,12 +91,25 @@ func tabsHandler (w http.ResponseWriter, r *http.Request) {
 
 //afficheras la page de cration d'une tablature
 func createHandler (w http.ResponseWriter, r *http.Request) {
-
 	err := create.ExecuteTemplate(w, "create.html", nil)
-	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func saveHandler (w http.ResponseWriter, r *http.Request) {
+
+	//on sauvegarde dans un fichier
+	p := &PageTablature{Titre:r.FormValue("titre"), Tab:[]byte(r.FormValue("sandbox"))}
+	
+	err := p.save()
+	
+	if err != nil {
+		panic(err)
+		// redirection vers page creation car erreur
+	}
+	
+	http.Redirect(w, r, "/view?tab="+p.Titre, 201)
 }
 
 //afficheras la page de vue std d'une tablature
