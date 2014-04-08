@@ -1,0 +1,129 @@
+var notes = [
+//Intro
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 0}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 2}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 3}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 6, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 6, fret: 3}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3},
+                {str: 3, fret: 0}],
+    duration: "q"}),
+//fin Intro
+
+//passage 1
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 2}],
+    duration: "h"}),
+
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 2}],
+    duration: "h"}),
+
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 2}],
+    duration: "h"}),
+
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 2}],
+    duration: "h"}),
+//fin passage 1
+
+//Intro
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 4, fret: 0}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 2}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 5, fret: 3}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 6, fret: 3}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 6, fret: 3}],
+    duration: "q"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 2, fret: 3},
+                {str: 3, fret: 0}],
+    duration: "q"}),
+//fin Intro
+
+//passage 2
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 2}],
+    duration: "h"}),
+
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 4}],
+    duration: "h"}),
+
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 0}],
+    duration: "h"}),
+new Vex.Flow.TabNote({
+    positions: [{str: 3, fret: 7}],
+    duration: "q"}).addModifier(new Vex.Flow.Bend("Full"), 1),
+//fin passage 2
+];
+		

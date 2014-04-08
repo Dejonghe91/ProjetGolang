@@ -36,16 +36,14 @@ var wiki = template.Must(template.ParseFiles("views/wiki.html"))
 
 
 func main() {
-	http.HandleFunc("/", homeHandler)		// Point d'entree de l'application
+	http.HandleFunc("/", homeHandler)			// Point d'entree de l'application
 	http.HandleFunc("/wiki", wikiHandler)		// Page wiki de l'application how to build a tab
 	http.HandleFunc("/tabs", tabsHandler)		// Liste des tableatures deja enregistrer sur le server
 	http.HandleFunc("/create", createHandler)	// Page de creation / viso d'une tableatures
 	http.HandleFunc("/view", viewHandler)		// Vue d'une tablature
 	http.HandleFunc("/save", saveHandler)		// Sauvegarde d'une tablature
 	
-	//ressources externe de l'application, css / js / images / fonts
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
-	// tablatures de l'application
 	http.Handle("/tablatures/", http.StripPrefix("/tablatures/", http.FileServer(http.Dir("tablatures"))))	
 	
 	fmt.Printf("Server listen on the port 9999 ...")
@@ -73,9 +71,10 @@ func wikiHandler (w http.ResponseWriter, r *http.Request) {
 
 //afficheras la liste des tablatures/view"
 func tabsHandler (w http.ResponseWriter, r *http.Request) {
-	tabs, _ := ioutil.ReadDir("tablatures")
-	
-	//gestion erreur retour loadPage (redirection sur http.NotFound)
+	tabs, err := ioutil.ReadDir("tablatures")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	
 	p := PageTab{Tabs: nil}
 	
@@ -83,7 +82,7 @@ func tabsHandler (w http.ResponseWriter, r *http.Request) {
 		p.Tabs = append(p.Tabs, strings.Replace(v.Name(), ".txt", "", -1))
     }
 
-	err := list.ExecuteTemplate(w, "list.html", p)	
+	err = list.ExecuteTemplate(w, "list.html", p)	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -106,20 +105,23 @@ func saveHandler (w http.ResponseWriter, r *http.Request) {
 	
 	if err != nil {
 		panic(err)
-		// redirection vers page creation car erreur
+		http.Redirect(w, r, "/create/", http.StatusInternalServerError)
 	}
 	
-	http.Redirect(w, r, "/view?tab="+p.Titre, 201)
+	http.Redirect(w, r, "/view?tab="+p.Titre, http.StatusCreated)
 }
 
 //afficheras la page de vue std d'une tablature
 func viewHandler (w http.ResponseWriter, r *http.Request) {
 	
-	//chargement du fichier
-	p, _:= loadPage(r.FormValue("tab"))
+	p, err := loadPage(r.FormValue("tab"))
+	
+	if err != nil {
+		http.Redirect(w, r, "/tabs", http.StatusNotFound)
+	}
 	
 	//execution du template
-	err := view.ExecuteTemplate(w, "view.html", &TablaturePage{Titre:p.Titre, Tab:template.JS(p.Tab)})
+	err = view.ExecuteTemplate(w, "view.html", &TablaturePage{Titre:p.Titre, Tab:template.JS(p.Tab)})
 	if err != nil {
 	      http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
