@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"fmt"
+	"strings"
 )
 
 
@@ -19,6 +20,11 @@ type PageTablature struct{
 type TablaturePage struct {
 	Titre string
 	Tab template.JS
+}
+
+//structure liste tablature
+type PageTab struct {
+	Tabs []string
 }
 
 //charge les pages en cache
@@ -67,19 +73,14 @@ func wikiHandler (w http.ResponseWriter, r *http.Request) {
 
 //afficheras la liste des tablatures/view"
 func tabsHandler (w http.ResponseWriter, r *http.Request) {
-	
-	//on charge la liste des tablatures
 	tabs, _ := ioutil.ReadDir("tablatures")
+	p := PageTab{Tabs: nil}
 	
-	fmt.Println("test")
-	for i, v := range tabs {
-       fmt.Println(i, v.Name()) 
+	for _, v := range tabs {
+		p.Tabs = append(p.Tabs, strings.Replace(v.Name(), ".txt", "", -1))
     }
-	fmt.Println("fin test")
 
-	
-	err := list.ExecuteTemplate(w, "list.html", nil)
-	
+	err := list.ExecuteTemplate(w, "list.html", p)	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

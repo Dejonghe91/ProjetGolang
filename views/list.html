@@ -50,6 +50,13 @@
         <p>To see the difference between static and fixed top navbars, just scroll.</p>
       </div>
 
+	  <div>
+		{{range .Tabs}}
+			<a href="/view?tab={{.}}">{{.}}</a><br/>
+		{{end}}
+
+	  </div>
+	  
     </div> <!-- /container -->
     
     
