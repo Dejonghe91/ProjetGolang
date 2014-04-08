@@ -39,10 +39,11 @@ func main() {
 	http.HandleFunc("/", homeHandler)			// Point d'entree de l'application
 	http.HandleFunc("/wiki", wikiHandler)		// Page wiki de l'application how to build a tab
 	http.HandleFunc("/tabs", tabsHandler)		// Liste des tableatures deja enregistrer sur le server
-	http.HandleFunc("/create", createHandler)	// Page de creation / viso d'une tableatures
+	http.HandleFunc("/create", createHandler)	// Page de creation d'une tableatures
 	http.HandleFunc("/view", viewHandler)		// Vue d'une tablature
 	http.HandleFunc("/save", saveHandler)		// Sauvegarde d'une tablature
 	
+	//handle pour les ressources (CSS / JS / FONTS) et le dossier des tablatures
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.Handle("/tablatures/", http.StripPrefix("/tablatures/", http.FileServer(http.Dir("tablatures"))))	
 	
@@ -50,7 +51,7 @@ func main() {
 	http.ListenAndServe(":9999", nil)
 }
 
-//afficheras la page présentation
+// racine de l'application
 func homeHandler (w http.ResponseWriter, r *http.Request) {
 	err := index.ExecuteTemplate(w, "index.html", nil)
 	
@@ -59,7 +60,7 @@ func homeHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//afficheras la page du wiki
+//handle page du wiki
 func wikiHandler (w http.ResponseWriter, r *http.Request) { 
 
 	err := wiki.ExecuteTemplate(w, "wiki.html", nil)
@@ -69,7 +70,7 @@ func wikiHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//afficheras la liste des tablatures/view"
+// Handle page liste des tablatures
 func tabsHandler (w http.ResponseWriter, r *http.Request) {
 	tabs, err := ioutil.ReadDir("tablatures")
 	if err != nil {
@@ -88,7 +89,7 @@ func tabsHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//afficheras la page de cration d'une tablature
+// Handle page creation de tablature
 func createHandler (w http.ResponseWriter, r *http.Request) {
 	err := create.ExecuteTemplate(w, "create.html", nil)
 	if err != nil {
@@ -96,6 +97,7 @@ func createHandler (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle fonction de sauvegarde d'une tablature
 func saveHandler (w http.ResponseWriter, r *http.Request) {
 
 	//on sauvegarde dans un fichier
@@ -111,7 +113,7 @@ func saveHandler (w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/view?tab="+p.Titre, http.StatusCreated)
 }
 
-//afficheras la page de vue std d'une tablature
+// Handle page vue d'une tablature
 func viewHandler (w http.ResponseWriter, r *http.Request) {
 	
 	p, err := loadPage(r.FormValue("tab"))
