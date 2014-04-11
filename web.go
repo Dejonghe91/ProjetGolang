@@ -106,24 +106,20 @@ func saveHandler (w http.ResponseWriter, r *http.Request) {
 	err := p.save()
 	
 	if err != nil {
-		//panic(err)
-		w.Header().Set("Status","302")
-		w.Header().Set("Location","/create")
-		//http.Redirect(w, r, "/create/", http.StatusInternalServerError)
+		//redirection vers page de création
+		createHandler(w, r)
 	}
-	
-	w.Header().Set("Status", string(http.StatusCreated))
-	w.Header().Set("Location","/view?tab="+p.Titre)
-	http.Redirect(w, r, "", http.StatusCreated)
+
+	tabsHandler(w, r)
 }
 
 // Handle page vue d'une tablature
 func viewHandler (w http.ResponseWriter, r *http.Request) {
 	
 	p, err := loadPage(r.FormValue("tab"))
-	
+
 	if err != nil {
-		http.Redirect(w, r, "/tabs", http.StatusNotFound)
+		tabsHandler(w, r)
 	}
 	
 	//execution du template
