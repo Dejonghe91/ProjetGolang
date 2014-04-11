@@ -106,11 +106,15 @@ func saveHandler (w http.ResponseWriter, r *http.Request) {
 	err := p.save()
 	
 	if err != nil {
-		panic(err)
-		http.Redirect(w, r, "/create/", http.StatusInternalServerError)
+		//panic(err)
+		w.Header().Set("Status","302")
+		w.Header().Set("Location","/create")
+		//http.Redirect(w, r, "/create/", http.StatusInternalServerError)
 	}
 	
-	http.Redirect(w, r, "/view?tab="+p.Titre, http.StatusCreated)
+	w.Header().Set("Status", string(http.StatusCreated))
+	w.Header().Set("Location","/view?tab="+p.Titre)
+	http.Redirect(w, r, "", http.StatusCreated)
 }
 
 // Handle page vue d'une tablature
