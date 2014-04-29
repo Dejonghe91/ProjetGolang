@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-
-//structure des pages {wiki, tablature, ...}
 //structure chargement / sauvegarde
 type PageTablature struct{
 	Titre string
@@ -131,6 +129,7 @@ func viewHandler (w http.ResponseWriter, r *http.Request) {
 
 
 //Tools
+//Charge une tablature grace a son nom
 func loadPage(title string) (*PageTablature, error) {
     filename := "tablatures/"+ title + ".txt"
     body, err := ioutil.ReadFile(filename)
@@ -140,8 +139,8 @@ func loadPage(title string) (*PageTablature, error) {
     return &PageTablature{Titre: title, Tab: body}, nil
 }
 
+//sauvegarde une tablature
 func (p *PageTablature) save() error {
     filename := "tablatures/" + p.Titre + ".txt"
     return ioutil.WriteFile(filename, p.Tab, 0600)
 }
-
